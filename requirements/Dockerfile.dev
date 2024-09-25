@@ -54,13 +54,17 @@ RUN apt-get update && apt-get -y dist-upgrade && \
 
 RUN mkdir -p ${PROJECT_PATH} /opt/DgStereo && \
     # EVHR System Dependencies
-    wget $STEREO_URL -O /opt/StereoPipeline.tar.bz2 && \
+    wget ${STEREO_URL} -O /opt/StereoPipeline.tar.bz2 && \
     cd /opt && \
     tar -jxf StereoPipeline.tar.bz2 && \
     rm /opt/StereoPipeline.tar.bz2 && \
     mv /opt/StereoPipeline* /opt/StereoPipeline && \
     pip install redis && \
-    pip install celery[redis] 
+    pip install celery[redis] && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-dgtools.git /opt/DgStereo/dgtools && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-imview.git /opt/DgStereo/imview && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-pygeotools.git /opt/DgStereo/pygeotools && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr
 
 #    #-------------------------------------------------------------------------------
 #    # EVHR DEM Dependencies-
