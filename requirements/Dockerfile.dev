@@ -26,7 +26,7 @@ ENV REDIS_PORT="6379"
 # System dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
     apt-get -y install \
-        build-essential \
+        build-essential
     #apt-get -y autoremove && \
     #rm -rf /var/cache/apt /var/lib/apt/lists/*
 
