@@ -61,66 +61,28 @@ RUN mkdir -p "/usr/local/ilab" /opt/DgStereo && \
     mv /opt/StereoPipeline* /opt/StereoPipeline && \
     pip install redis && \
     pip install celery[redis] && \
+    # EVHR DEM Dependencies
     git clone https://github.com/nasa-nccs-hpda/evhr-dgtools.git /opt/DgStereo/dgtools && \
     git clone https://github.com/nasa-nccs-hpda/evhr-imview.git /opt/DgStereo/imview && \
     git clone https://github.com/nasa-nccs-hpda/evhr-pygeotools.git /opt/DgStereo/pygeotools && \
-    git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr
-
-#    #-------------------------------------------------------------------------------
-#    # EVHR DEM Dependencies-
-#    #------------------------------------------------------------------------------
-#    mkdir /opt/DgStereo
-#    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/dgtools.git /opt/DgStereo/dgtools
-#    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/imview.git /opt/DgStereo/imview
-#    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/pygeotools.git /opt/DgStereo/pygeotools
-#    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/evhr-dem.git /opt/DgStereo/evhr
-#    printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt
-#    chmod 755 -R /opt/*
-#    python -m pip install 2to3 psycopg2-binary
-#    2to3 -w /opt/DgStereo
-#    chmod +wx /lib/x86_64-linux-gnu/libc.so.6
-
-#    #-------------------------------------------------------------------------------
-#    # EVHR git clone
-#    #-------------------------------------------------------------------------------
-#    # RECOMMENDED LOCATION - CURRENTLY INCLUDED IN CORE
-#    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
-#    	${PROJECT_PATH}/core
-#    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git \
-#		${PROJECT_PATH}/evhr
-#    chmod a+rwx -R ${PROJECT_PATH}/*
-#    
-#    #******************************************************************************#
-
-#    #******************************************************************************
-#    # SR-Lite
-#    #-------------------------------------------------------------------------------
-#    # SR-Lite System Dependencies
-#    #-------------------------------------------------------------------------------
-
-#    #-------------------------------------------------------------------------------
-#    # SR-Lite Git Dependencies
-#    #-------------------------------------------------------------------------------
-#    #pip3 install --upgrade pygeotools
-#    #7/19/24 - plotnine uninstalls the original numpy 1.22 and installs numpy 1.24 which breaks the srlite run?
-#    #pip3 install --upgrade plotnine
-#    pip3 install plotnine==0.10.1
-#    pip3 install --upgrade pylr2
-#    # RECOMMENDED LOCATION - CURRENTLY INCLUDED IN CORE
-#    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
-#        	${PROJECT_PATH}/srlite
-#    chmod a+rwx -R ${PROJECT_PATH}/*
-    
-#    #******************************************************************************
-#    # CCDC 
-#    #-------------------------------------------------------------------------------
-#    # CCDC System Dependencies
-#    #-------------------------------------------------------------------------------
-
-
-# Pip
-# RUN pip install \
-#    scipy \
+    git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr && \
+    printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt && \
+    chmod 755 -R /opt/* && \
+    pip install 2to3 psycopg2-binary && \
+    2to3 -w /opt/DgStereo && \
+    chmod +wx /lib/x86_64-linux-gnu/libc.so.6 && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
+        /usr/local/ilab/core && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git \
+        /usr/local/ilab/evhr && \
+    chmod a+rwx -R /usr/local/ilab/* && \
+    # SR-Lite Git Dependencies
+    pip install plotnine==0.10.1 && \
+    pip install --upgrade pylr2 && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
+        /usr/local/ilab/srlite && \
+    chmod a+rwx -R /usr/local/ilab/*
+    # CCDC System Dependencies
 
 
 HEALTHCHECK NONE
