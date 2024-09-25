@@ -52,9 +52,9 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     apt-get -y autoremove && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
 
-RUN mkdir -p ${PROJECT_PATH} /opt/DgStereo && \
+RUN mkdir -p "/usr/local/ilab" /opt/DgStereo && \
     # EVHR System Dependencies
-    wget ${STEREO_URL} -O /opt/StereoPipeline.tar.bz2 && \
+    wget "https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2" -O /opt/StereoPipeline.tar.bz2 && \
     cd /opt && \
     tar -jxf StereoPipeline.tar.bz2 && \
     rm /opt/StereoPipeline.tar.bz2 && \
