@@ -47,8 +47,8 @@ RUN apt-get update && apt-get -y dist-upgrade && \
         pkg-config \
         python3-dev \
         gir1.2-gtk-3.0 && \
-    apt-get -y autoremove
-    #rm -rf /var/cache/apt /var/lib/apt/lists/*
+    apt-get -y autoremove && \
+    rm -rf /var/cache/apt /var/lib/apt/lists/*
 
 #    PROJECT_PATH="/usr/local/ilab"
 #    mkdir -p ${PROJECT_PATH}
