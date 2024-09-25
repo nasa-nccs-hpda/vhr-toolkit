@@ -52,7 +52,7 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     apt-get -y autoremove && \
     rm -rf /var/cache/apt /var/lib/apt/lists/*
 
-RUN mkdir -p ${PROJECT_PATH} /opt/DgStereo \
+RUN mkdir -p ${PROJECT_PATH} /opt/DgStereo && \
     # EVHR System Dependencies
     wget $STEREO_URL -O /opt/StereoPipeline.tar.bz2 && \
     cd /opt && \
