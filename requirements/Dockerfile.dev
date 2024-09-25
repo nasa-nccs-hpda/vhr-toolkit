@@ -8,7 +8,7 @@ ARG FROM_IMAGE=nasanccs/vhr-cloudmask
 FROM ${FROM_IMAGE}:${VERSION}
 
 # Ubuntu needs noninteractive to be forced
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV CPLUS_INCLUDE_PATH="/usr/include/gdal"
 ENV C_INCLUDE_PATH="/usr/include/gdal"
 ENV PROJ_LIB="/usr/share/proj"
@@ -24,14 +24,11 @@ ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgt
 ENV REDIS_PORT="6379"
 
 # System dependencies
-RUN apt-get update && \
-    apt-get -y install software-properties-common && \
-    add-apt-repository ppa:ubuntugis/ubuntugis-unstable && \
-    apt-get update && apt-get -y dist-upgrade && \
+RUN apt-get update && apt-get -y dist-upgrade && \
     apt-get -y install \
         build-essential \
-    apt-get -y autoremove && \
-    rm -rf /var/cache/apt /var/lib/apt/lists/*
+    #apt-get -y autoremove && \
+    #rm -rf /var/cache/apt /var/lib/apt/lists/*
 
 
 # Pip
