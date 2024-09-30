@@ -1,4 +1,4 @@
-name: CI to Dockerhub
+name: CI to Dockerhub - Dev
 
 on:
   push:
@@ -52,4 +52,4 @@ jobs:
           context: .
           file: ./requirements/Dockerfile.dev
           push: true
-          tags: nasanccs/vhr-toolkit:latest
+          tags: nasanccs/vhr-toolkit:dev
