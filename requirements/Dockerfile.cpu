@@ -34,7 +34,7 @@ RUN PROJECT_PATH="/usr/local/ilab" && \
     DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         python3-pip python3-dev wget vim curl git procps gcc g++ bzip2 libssl-dev \
-        libsqlite3-dev libx11-dev libgeos++-dev libproj-dev
+        libsqlite3-dev libx11-dev libgeos++-dev libproj-dev && \
     DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apt
