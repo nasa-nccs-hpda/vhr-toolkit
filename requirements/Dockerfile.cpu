@@ -43,7 +43,8 @@ RUN PROJECT_PATH="/usr/local/ilab" && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /var/cache/apt
 
-RUN pip install pipx && \
+RUN rm -rf /usr/lib/python*/EXTERNALLY-MANAGED && \
+    pip install pipx && \
     pip install rasterio
 
 HEALTHCHECK NONE
