@@ -2,8 +2,6 @@
 FROM ghcr.io/osgeo/gdal:ubuntu-full-3.9.1
 
 # Arguments to pass to the image
-ARG VERSION=latest
-ARG FROM_IMAGE=nasanccs/vhr-cloudmask
 ARG STEREO_URL="https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2"
 ARG PROJECT_PATH="/usr/local/ilab"
 
@@ -13,7 +11,6 @@ ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
 ENV REDIS_PORT="6379"
 ENV REDIS_FILE="/etc/profile.d/redis_server.sh"
-ENV REDIS_PORTS=$REDIS_PORT
 
 # Ubuntu needs noninteractive to be forced
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,7 +22,6 @@ ENV SM_FRAMEWORK="tf.keras"
 ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
-# 7/19/24 - Combine PYTHONPATH for all 3 apps
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
