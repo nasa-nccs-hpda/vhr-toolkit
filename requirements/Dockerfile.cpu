@@ -95,6 +95,9 @@ RUN rm -rf /usr/lib/python*/EXTERNALLY-MANAGED && \
     pip install geedim && \
     pip install tensorflow && \
     pip install vhr-cloudmask && \
+    pip install 2to3 psycopg2-binary && \
+    pip install plotnine==0.10.1 && \
+    pip install --upgrade pylr2 && \
     pip cache purge
 
 RUN PROJECT_PATH="/usr/local/ilab" && \
@@ -115,8 +118,6 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     tar -jxf StereoPipeline.tar.bz2 && \
     rm /opt/StereoPipeline.tar.bz2 && \
     mv /opt/StereoPipeline* /opt/StereoPipeline && \
-    pip install redis && \
-    pip install celery[redis] && \
     # EVHR DEM Dependencies
     git clone https://github.com/nasa-nccs-hpda/evhr-dgtools.git /opt/DgStereo/dgtools && \
     git clone https://github.com/nasa-nccs-hpda/evhr-imview.git /opt/DgStereo/imview && \
@@ -124,7 +125,6 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr && \
     printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt && \
     chmod 755 -R /opt/* && \
-    pip install 2to3 psycopg2-binary && \
     2to3 -w /opt/DgStereo && \
     chmod +wx /lib/x86_64-linux-gnu/libc.so.6 && \
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
@@ -133,8 +133,6 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
         /usr/local/ilab/evhr && \
     chmod a+rwx -R /usr/local/ilab/* && \
     # SR-Lite Git Dependencies
-    pip install plotnine==0.10.1 && \
-    pip install --upgrade pylr2 && \
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
         /usr/local/ilab/srlite && \
     chmod a+rwx -R /usr/local/ilab/* && \
