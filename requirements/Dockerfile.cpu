@@ -96,7 +96,7 @@ RUN rm -rf /usr/lib/python*/EXTERNALLY-MANAGED && \
     pip install tensorflow && \
     pip install vhr-cloudmask && \
     pip install 2to3 psycopg2-binary && \
-    pip install plotnine==0.10.1 && \
+    pip install plotnine && \
     pip install --upgrade pylr2 && \
     pip cache purge
 
