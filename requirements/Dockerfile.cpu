@@ -19,7 +19,6 @@ ENV C_INCLUDE_PATH="/usr/include/gdal"
 ENV PROJ_LIB="/usr/share/proj"
 ENV PROJ_DATA="/usr/share/proj"
 ENV SM_FRAMEWORK="tf.keras"
-#ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite"
