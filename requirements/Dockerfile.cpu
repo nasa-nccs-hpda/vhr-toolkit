@@ -99,6 +99,38 @@ RUN rm -rf /usr/lib/python*/EXTERNALLY-MANAGED && \
     pip install --upgrade pylr2 && \
     pip cache purge
 
+RUN pip install \
+    scipy \
+    omegaconf \
+    rasterio \
+    rioxarray \
+    xarray \
+    geopandas \
+    tensorflow_probability \
+    keras-cv \
+    keras-unet-collection \
+    opencv-python \
+    opencv-python-headless \
+    opencv-contrib-python \
+    opencv-contrib-python-headless \
+    tifffile \
+    webcolors \
+    Pillow \
+    seaborn \
+    xgboost \
+    tiler \
+    segmentation-models \
+    pytest \
+    coveralls \
+    rtree \
+    rasterstats \
+    geedim \
+    geemap \
+    zarr \
+    cubo[ee] \
+    git+https://github.com/dshean/pygeotools.git@master \
+    git+https://github.com/nasa-nccs-hpda/tensorflow-caney.git@main
+
 RUN PROJECT_PATH="/usr/local/ilab" && \
     REDIS_FILE="/etc/profile.d/redis_server.sh" && \
     echo $PROJECT_PATH && \
