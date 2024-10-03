@@ -129,7 +129,8 @@ RUN pip install \
     zarr \
     cubo[ee] \
     git+https://github.com/dshean/pygeotools.git@master \
-    git+https://github.com/nasa-nccs-hpda/tensorflow-caney.git@main
+    git+https://github.com/nasa-nccs-hpda/tensorflow-caney.git@main \
+    tensorflow==2.7
 
 RUN PROJECT_PATH="/usr/local/ilab" && \
     REDIS_FILE="/etc/profile.d/redis_server.sh" && \
