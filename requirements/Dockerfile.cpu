@@ -21,7 +21,7 @@ ENV PROJ_DATA="/usr/share/proj"
 ENV SM_FRAMEWORK="tf.keras"
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite"
+ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
 
@@ -170,7 +170,8 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     chmod a+rwx -R /usr/local/ilab/* && \
     # CCDC System Dependencies
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/pyCCDC.git \
-        /usr/local/ilab/pyCCDC
+        /usr/local/ilab/pyCCDC && \
+    chmod a+rwx -R /usr/local/ilab/* && \
 
 HEALTHCHECK NONE
 ENTRYPOINT []
