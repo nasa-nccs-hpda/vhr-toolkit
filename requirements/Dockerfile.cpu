@@ -1,5 +1,5 @@
 # vhr-toolkit combined container
-FROM ghcr.io/osgeo/gdal:ubuntu-full-3.6.1
+FROM ghcr.io/osgeo/gdal:ubuntu-full-3.7.1
 
 # Arguments to pass to the image
 ARG STEREO_URL="https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2"
