@@ -130,7 +130,8 @@ RUN pip install \
     cubo[ee] \
     git+https://github.com/dshean/pygeotools.git@master \
     git+https://github.com/nasa-nccs-hpda/tensorflow-caney.git@main \
-    tensorflow==2.14.1
+    tensorflow==2.16.1
+    #tensorflow==2.14.1
 
 RUN PROJECT_PATH="/usr/local/ilab" && \
     REDIS_FILE="/etc/profile.d/redis_server.sh" && \
