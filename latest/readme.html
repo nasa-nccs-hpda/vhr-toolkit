@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&lt;no title&gt; &mdash; vhr-toolkit 0.0.1 documentation</title>
+  <title>Surface reflectance from commercial very high resolution multispectral imagery estimated empirically with synthetic Landsat &mdash; vhr-toolkit 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -47,10 +47,15 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul class="simple">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Surface reflectance from commercial very high resolution multispectral imagery estimated empirically with synthetic Landsat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#srvhr-empirical-estimation-of-vhr-surface-reflectance-sr-lite">SR<sub>VHR</sub>: empirical estimation of VHR surface reflectance (SR-lite)</a></li>
 </ul>
-</div>
+</li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -65,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="breadcrumb-item active">Surface reflectance from commercial very high resolution multispectral imagery estimated empirically with synthetic Landsat</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/readme.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -75,7 +80,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
+  <section id="surface-reflectance-from-commercial-very-high-resolution-multispectral-imagery-estimated-empirically-with-synthetic-landsat">
+<h1>Surface reflectance from commercial very high resolution multispectral imagery estimated empirically with synthetic Landsat<a class="headerlink" href="#surface-reflectance-from-commercial-very-high-resolution-multispectral-imagery-estimated-empirically-with-synthetic-landsat" title="Link to this heading"></a></h1>
+<a class="reference external image-reference" href="https://github.com/nasa-nccs-hpda/vhr-toolkit/actions/workflows/lint.yml"><img alt="https://github.com/nasa-nccs-hpda/vhr-toolkit/actions/workflows/lint.yml/badge.svg" src="https://github.com/nasa-nccs-hpda/vhr-toolkit/actions/workflows/lint.yml/badge.svg" /></a>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>Scientific analysis of changes of the Earth’s land surface benefit from well-characterized, science quality
+remotely sensed data. This data quality is the result of models that estimate and remove atmospheric
+constituents and account for sun-sensor geometry.  Top-of-atmosphere (TOA) reflectance in commercial
+very high resolution (&lt; 5 m; VHR) spaceborne imagery routinely varies for unchanged surface features
+because of signal variation from the combined effects of atmospheric haze and a range of sun-sensor
+geometric scenarios of acquisitions. Consistency from surface reflectance (SR) versions of this imagery
+must be sufficient to identify and track the change or stability of fine-scale features that, though small,
+may be widely distributed across remote domains, and serve as key indicators of critical broad-scale
+environmental change. Currently commercial SR products are available, but typically the model employed
+is proprietary and the costs for using these products over a large domain can be significant.</p>
+<p>Here we provide an open-source workflow for the scientific community for fine-scaled empirical
+estimation of surface reflectance from multispectral VHR imagery using reference from
+synthetically-derived coincident Landsat-based surface reflectance.</p>
+</section>
+<section id="srvhr-empirical-estimation-of-vhr-surface-reflectance-sr-lite">
+<h2>SR<sub>VHR</sub>: empirical estimation of VHR surface reflectance (SR-lite)<a class="headerlink" href="#srvhr-empirical-estimation-of-vhr-surface-reflectance-sr-lite" title="Link to this heading"></a></h2>
+<p>The workflow for estimating surface reflectance for commercial VHR multispectral imagery (SR<sub>VHR</sub>).</p>
+<p>![fig1_v3 (1)](<a class="reference external" href="https://github.com/user-attachments/assets/f3a6f82c-56bd-4b14-b3d2-74f55be47514">https://github.com/user-attachments/assets/f3a6f82c-56bd-4b14-b3d2-74f55be47514</a>)</p>
+<blockquote>
+<div><p>Workflow Contributors | Role | Affiliation |</p>
+</div></blockquote>
+<div class="line-block">
+<div class="line">—————- | —————- | —————- |</div>
+<div class="line">Paul M .Montesano |  Author ; Evaluator | NASA Goddard Space Flight Center Data Science Group |</div>
+<div class="line">Matthew J. Macander |   Author ; Evaluator | Alaska Biological Research, Inc. |</div>
+<div class="line">Jordan A. Caraballo-Vega  |  Developer | NASA Goddard Space Flight Center Data Science Group |</div>
+<div class="line">Melanie J. Frost |  Author ; Evaluator | NASA Goddard Space Flight Center Data Science Group |</div>
+<div class="line">Jian Li |  Developer | NASA Goddard Space Flight Center Data Science Group |</div>
+<div class="line">Glenn S. Tamkin  |  Developer | NASA Goddard Space Flight Center Data Science Group |</div>
+<div class="line">Mark L. Carroll |  PI | NASA Goddard Space Flight Center Data Science Group (Lead)|</div>
+</div>
+</section>
+</section>
+
 
            </div>
           </div>
