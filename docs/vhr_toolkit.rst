@@ -1,7 +1,7 @@
 vhr-toolkit
 ------------------
 
-Package to ease the coordinated validation of remote sensing imagery.
+TBD
 
 Installation
 -----------------
@@ -9,7 +9,7 @@ Installation
 Install with pip
 ::
 
-    pip install vhr-toolkit
+    TBD
 
 API
 ----
@@ -20,8 +20,7 @@ API
 Authors
 ----------
 
-CISTO Data Science Group
-Jordan A. Caraballo-Vega, jordan.a.caraballo-vega@nasa.gov
+TBD
 
 License
 ---------------
