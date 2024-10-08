@@ -13,7 +13,7 @@ singularity build --sandbox /lscratch/$USER/container/vhr-toolkit docker://nasan
 
 ## Contributing
 
-Please see our [guide for contributing to vhr-cloudmask](CONTRIBUTING.md). Contributions
+Please see our [guide for contributing to vhr-toolkit](CONTRIBUTING.md). Contributions
 are welcome, and they are greatly appreciated! Every little bit helps, and credit will
 always be given.
 
