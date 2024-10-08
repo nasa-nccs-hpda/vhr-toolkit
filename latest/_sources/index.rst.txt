@@ -19,11 +19,14 @@ Here we provide an open-source workflow for the scientific community for fine-sc
 estimation of surface reflectance from multispectral VHR imagery using reference from 
 synthetically-derived coincident Landsat-based surface reflectance.  
 
+.. image:: https://github.com/user-attachments/assets/f3a6f82c-56bd-4b14-b3d2-74f55be47514
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   readme
+   srlite
+   pyCCDC
 
 Indices and tables
 ==================
