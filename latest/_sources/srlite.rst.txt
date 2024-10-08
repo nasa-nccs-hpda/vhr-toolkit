@@ -37,3 +37,8 @@ The workflow for estimating surface reflectance for commercial VHR multispectral
    * - Mark L. Carroll
      - PI
      - NASA Goddard Space Flight Center Data Science Group (Lead)
+
+References:
+
+* User Guide (October 2024): https://docs.google.com/document/d/1tajOxCI53WAvnyrkgYiPNU7oTiBr-HOiFmUGfZN44lM/edit#heading=h.cbjbmv6c5chq
+* Surface Reflectance From Commercial Very High Resolution Multispectral Imagery Estimated Empirically With Synthetic Landsat (2023): https://ieeexplore.ieee.org/document/10670299
