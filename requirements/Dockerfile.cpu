@@ -19,12 +19,12 @@ ENV C_INCLUDE_PATH="/usr/include/gdal"
 ENV PROJ_LIB="/usr/share/proj"
 ENV PROJ_DATA="/usr/share/proj"
 ENV SM_FRAMEWORK="tf.keras"
+ENV TF_USE_LEGACY_KERAS=1
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
-ENV TF_USE_LEGACY_KERAS=1
 
 RUN PROJECT_PATH="/usr/local/ilab" && \
     REDIS_FILE="/etc/profile.d/redis_server.sh" && \
