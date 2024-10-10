@@ -82,7 +82,9 @@ def main():
     # ---
     logger.info('Running CCDC.')
     ccdcDirNum = cMaskDirNum + 1
-    ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
+    # Toggle these two to cause 'Invalid Coordinate' error (Mel reprojected the original)
+    ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc/reprojected')
+    # ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
     ccdcDir.mkdir(exist_ok=True)
     expCcdc = [ccdcDir / f.name.replace('-toa', '-toa_ccdc') for f in toas]
     
