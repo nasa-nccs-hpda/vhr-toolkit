@@ -46,21 +46,21 @@ def main():
     # ---
     scenes = args.scenes
 
-    if args.scenes_in_file:
+    # if args.scenes_in_file:
 
-        with open(args.scenes_in_file, newline='') as csvFile:
+    #     with open(args.scenes_in_file, newline='') as csvFile:
 
-            reader = csv.reader(csvFile)
-            scenes = [Path(scene[0]) for scene in reader]
+    #         reader = csv.reader(csvFile)
+    #         scenes = [Path(scene[0]) for scene in reader]
 
-    dgScenes = scenesToDgFiles(scenes, logger)
+    # dgScenes = scenesToDgFiles(scenes, logger)
     
     # ---
     # EVHR
     # ---
     logger.info('Running EVHR.')
     toa = EvhrToA(args.o, args.dem, args.pan_res, args.pan_sharpen, logger)
-    toa.run(dgScenes)
+    # toa.run(dgScenes)
     toaDir = Path(toa._toaDir)
     toaDirNum = int(toaDir.name.split('-')[0])
     toas = toaDir.glob('*-toa.tif')
