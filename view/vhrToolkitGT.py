@@ -113,7 +113,7 @@ def main():
                          cloudmask='True',
                          csv='True',
                          band8='True',
-                         clean='True',
+                         clean='False',
                          toa_suffix='-toa.tif',
                          target_suffix='-toa_ccdc.tif',
                          cloudmask_suffix='-toa.cloudmask.tif',
