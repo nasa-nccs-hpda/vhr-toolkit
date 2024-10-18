@@ -9,11 +9,11 @@ import sys
 from core.model.DgFile import DgFile
 
 from evhr.model.EvhrToA import EvhrToA
-# from pyCCDC.model.CCDCPipeline import CCDCPipeline
+from pyCCDC.model.CCDCPipeline import CCDCPipeline
 from srlite.model.SrliteWorkflow import SrliteWorkflow
 
-# from vhr_cloudmask.model.pipelines.cloudmask_cnn_pipeline import \
-#     CloudMaskPipeline
+from vhr_cloudmask.model.pipelines.cloudmask_cnn_pipeline import \
+    CloudMaskPipeline
 
 
 # -----------------------------------------------------------------------------
@@ -46,21 +46,21 @@ def main():
     # ---
     scenes = args.scenes
 
-    # if args.scenes_in_file:
+    if args.scenes_in_file:
 
-    #     with open(args.scenes_in_file, newline='') as csvFile:
+        with open(args.scenes_in_file, newline='') as csvFile:
 
-    #         reader = csv.reader(csvFile)
-    #         scenes = [Path(scene[0]) for scene in reader]
+            reader = csv.reader(csvFile)
+            scenes = [Path(scene[0]) for scene in reader]
 
-    # dgScenes = scenesToDgFiles(scenes, logger)
+    dgScenes = scenesToDgFiles(scenes, logger)
     
     # ---
     # EVHR
     # ---
     logger.info('Running EVHR.')
     toa = EvhrToA(args.o, args.dem, args.pan_res, args.pan_sharpen, logger)
-    # toa.run(dgScenes)
+    toa.run(dgScenes)
     toaDir = Path(toa._toaDir)
     toaDirNum = int(toaDir.name.split('-')[0])
     toas = toaDir.glob('*-toa.tif')
@@ -71,11 +71,11 @@ def main():
     logger.info('Running CloudMaskPipeline.')
     cMaskDirNum = toaDirNum + 1
     cMaskDir = Path(args.o) / (str(cMaskDirNum) + '-masks')
-    cMaskDir = Path(args.o) / (str(cMaskDirNum) + '-masks/5-toas')
+#    cMaskDir = Path(args.o) / (str(cMaskDirNum) + '-masks/5-toas')
     cMaskDir.mkdir(exist_ok=True)
     toaRegex = [str(toaDir / '*-toa.tif')]
-    # cmpl = CloudMaskPipeline(output_dir=cMaskDir, inference_regex_list=toaRegex)
-    # cmpl.predict()
+    cmpl = CloudMaskPipeline(output_dir=cMaskDir, inference_regex_list=toaRegex)
+    cmpl.predict()
 
     # ---
     # EHVR -> CCDC
@@ -83,15 +83,15 @@ def main():
     logger.info('Running CCDC.')
     ccdcDirNum = cMaskDirNum + 1
     # Toggle these two to cause 'Invalid Coordinate' error (Mel reprojected the original)
-    ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc/reprojected')
-    # ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
+    # ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc/reprojected')
+    ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
     ccdcDir.mkdir(exist_ok=True)
     expCcdc = [ccdcDir / f.name.replace('-toa', '-toa_ccdc') for f in toas]
     
-    # if not all([f.exists() for f in expCcdc]):
+    if not all([f.exists() for f in expCcdc]):
         
-    #     ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
-    #     ccdc.run()
+        ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
+        ccdc.run()
 
     # ---
     # EVHR + Cloud Mask + CCDC -> SRL
@@ -106,7 +106,7 @@ def main():
     srl = SrliteWorkflow(output_dir=srlDir,
                          toa_src=toaDir,
                          target_dir=ccdcDir,
-                         cloudmask_dir=cMaskDir,
+                         cloudmask_dir=Path(str(cMaskDir) + '/5-toas'),
                          regressor='rma',
                          debug=1,
                          pmask='True',
