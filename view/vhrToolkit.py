@@ -19,7 +19,7 @@ from vhr_cloudmask.model.pipelines.cloudmask_cnn_pipeline import \
 # -----------------------------------------------------------------------------
 # main
 #
-# vhr-toolkit/view/vhrToolkit.py -o /explore/nobackup/people/rlgill/SystemTesting/testILTK --scenes_in_file /explore/nobackup/projects/ilab/projects/vhr-toolkit/testing/evhr/toa_clv_test_alaska_cloud.csv
+# vhr-toolkit/view/vhrToolkit.py -o /explore/nobackup/people/rlgill/SystemTesting/testILTK --scenes_in_file /explore/nobackup/projects/ilab/projects/vhr-toolkit/testing/evhr/toa_clv_test_alaska_cloud.csv # noqa: E501
 #
 # TODO: EvhrToA needs an accessor for _outDir, _toaDir.
 # TODO: EvhrToA.__init__() outDir s/b of type Path.
@@ -74,7 +74,10 @@ def main():
     cMaskDir.mkdir(exist_ok=True)
     cMaskActualOutDir = cMaskDir / '5-toas'
     toaRegex = [str(toaDir / '*-toa.tif')]
-    cmpl = CloudMaskPipeline(output_dir=cMaskDir, inference_regex_list=toaRegex)
+    
+    cmpl = CloudMaskPipeline(output_dir=cMaskDir, 
+                             inference_regex_list=toaRegex)
+
     cmpl.predict()
 
     # ---
@@ -115,6 +118,7 @@ def main():
                          logger=logger)
 
     srl.processToas()
+
 
 # -----------------------------------------------------------------------------
 # parseArgs
@@ -183,6 +187,7 @@ def parseArgs() -> argparse.Namespace:
 
     return args
 
+
 # -----------------------------------------------------------------------------
 # scenesToDgFiles
 # -----------------------------------------------------------------------------
@@ -199,6 +204,7 @@ def scenesToDgFiles(scenes: list, logger: logging.RootLogger) -> list:
             dgScenes.append(DgFile(str(s)))
 
     return dgScenes
+
 
 # -----------------------------------------------------------------------------
 # Invoke the main
