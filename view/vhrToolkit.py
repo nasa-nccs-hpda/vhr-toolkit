@@ -26,7 +26,7 @@ from vhr_cloudmask.model.pipelines.cloudmask_cnn_pipeline import \
 # TODO: EvhrToA.run() return list of ToAs produced?
 # -----------------------------------------------------------------------------
 def main():
-    
+
     # ---
     # Parse input arguments.
     # ---
@@ -42,7 +42,7 @@ def main():
     logger.addHandler(ch)
 
     # ---
-    # Make DgFiles from the input scenes. 
+    # Make DgFiles from the input scenes.
     # ---
     scenes = args.scenes
 
@@ -54,7 +54,7 @@ def main():
             scenes = [Path(scene[0]) for scene in reader]
 
     dgScenes = scenesToDgFiles(scenes, logger)
-    
+
     # ---
     # EVHR
     # ---
@@ -72,6 +72,7 @@ def main():
     cMaskDirNum = toaDirNum + 1
     cMaskDir = Path(args.o) / (str(cMaskDirNum) + '-masks')
     cMaskDir.mkdir(exist_ok=True)
+    cMaskActualOutDir = cMaskDir / '5-toas'
     toaRegex = [str(toaDir / '*-toa.tif')]
     cmpl = CloudMaskPipeline(output_dir=cMaskDir, inference_regex_list=toaRegex)
     cmpl.predict()
@@ -84,9 +85,9 @@ def main():
     ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
     ccdcDir.mkdir(exist_ok=True)
     expCcdc = [ccdcDir / f.name.replace('-toa', '-toa_ccdc') for f in toas]
-    
+
     if not all([f.exists() for f in expCcdc]):
-        
+
         ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
         ccdc.run()
 
@@ -98,31 +99,28 @@ def main():
     srlDir = Path(args.o) / (str(srlDirNum) + '-srl')
     srlDir.mkdir(exist_ok=True)
 
-    import pdb
-    pdb.set_trace()
-
     srl = SrliteWorkflow(output_dir=srlDir,
                          toa_src=toaDir,
                          target_dir=ccdcDir,
-                         cloudmask_dir=cMaskDir)  #,
-                         # regressor='rma',
-                         # debug=1,
-                         # pmask='True',
-                         # cloudmask='True',
-                         # csv='True',
-                         # band8='True',
-                         # clean='True',
-                         # # cloudmask_suffix=cloudmask_suffix,
-                         # target_suffix='-ccdc.tif',
-                         # logger=logger)
+                         cloudmask_dir=cMaskActualOutDir,
+                         regressor='rma',
+                         debug=1,
+                         pmask='True',
+                         cloudmask='True',
+                         csv='True',
+                         band8='True',
+                         clean='True',
+                         cloudmask_suffix='-toa.cloudmask.tif',
+                         target_suffix='-toa_ccdc.tif',
+                         logger=logger)
 
-    # srl.processToas()
-    
+    srl.processToas()
+
 # -----------------------------------------------------------------------------
 # parseArgs
 # -----------------------------------------------------------------------------
 def parseArgs() -> argparse.Namespace:
-    
+
     desc = 'Use this application to run the VHR Toolkit.'
     parser = argparse.ArgumentParser(description=desc)
 
@@ -169,27 +167,27 @@ def parseArgs() -> argparse.Namespace:
     # ---
     # VHR Cloud Mask Parameters
     # ---
-    
+
     # ---
     # CCDC Parameters
     # ---
-    
+
     # ---
     # SR-lite Parameters
     # ---
-    
+
     # ---
     # Parse
     # ---
     args = parser.parse_args()
-        
+
     return args
-    
+
 # -----------------------------------------------------------------------------
 # scenesToDgFiles
 # -----------------------------------------------------------------------------
 def scenesToDgFiles(scenes: list, logger: logging.RootLogger) -> list:
-    
+
     dgScenes = []
 
     for s in scenes:
@@ -199,7 +197,7 @@ def scenesToDgFiles(scenes: list, logger: logging.RootLogger) -> list:
 
         else:
             dgScenes.append(DgFile(str(s)))
-            
+
     return dgScenes
 
 # -----------------------------------------------------------------------------
