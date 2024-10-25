@@ -74,8 +74,8 @@ def main():
     cMaskDir.mkdir(exist_ok=True)
     cMaskActualOutDir = cMaskDir / '5-toas'
     toaRegex = [str(toaDir / '*-toa.tif')]
-    
-    cmpl = CloudMaskPipeline(output_dir=cMaskDir, 
+
+    cmpl = CloudMaskPipeline(output_dir=cMaskDir,
                              inference_regex_list=toaRegex)
 
     cmpl.predict()
