@@ -1,0 +1,93 @@
+# vhr-toolkit combined container
+
+# Arguments to pass to the image
+ARG VERSION=latest
+ARG FROM_IMAGE=nasanccs/vhr-cloudmask
+ARG STEREO_URL="https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2"
+ARG PROJECT_PATH="/usr/local/ilab"
+
+# Import RAPIDS container as the BASE Image (cuda base image)
+FROM ${FROM_IMAGE}:${VERSION}
+
+# Ubuntu needs noninteractive to be forced
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CPLUS_INCLUDE_PATH="/usr/include/gdal"
+ENV C_INCLUDE_PATH="/usr/include/gdal"
+ENV PROJ_LIB="/usr/share/proj"
+ENV PROJ_DATA="/usr/share/proj"
+ENV SM_FRAMEWORK="tf.keras"
+ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
+ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
+
+# 7/19/24 - Combine PYTHONPATH for all 3 apps
+ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite"
+ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
+ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
+ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
+ENV REDIS_PORT="6379"
+
+# System dependencies
+RUN apt-get update && apt-get -y dist-upgrade && \
+    apt-get -y install \
+        build-essential \
+        # EVHR system dependencies
+        parallel \
+        libdatetime-perl \
+        gawk \
+        util-linux \
+        bc \
+        # SRLite system dependencies
+        python3-tk \
+        tk-dev \
+        libgdbm-dev \
+        libc6-dev \
+        libbz2-dev \
+        libffi-dev \
+        zlib1g-dev \
+        liblzma-dev \
+        libgirepository1.0-dev \
+        libcairo2-dev \
+        pkg-config \
+        python3-dev \
+        gir1.2-gtk-3.0 && \
+    apt-get -y autoremove && \
+    rm -rf /var/cache/apt /var/lib/apt/lists/*
+
+RUN mkdir -p "/usr/local/ilab" /opt/DgStereo && \
+    # EVHR System Dependencies
+    wget "https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2" -O /opt/StereoPipeline.tar.bz2 && \
+    cd /opt && \
+    tar -jxf StereoPipeline.tar.bz2 && \
+    rm /opt/StereoPipeline.tar.bz2 && \
+    mv /opt/StereoPipeline* /opt/StereoPipeline && \
+    pip install redis && \
+    pip install celery[redis] && \
+    # EVHR DEM Dependencies
+    git clone https://github.com/nasa-nccs-hpda/evhr-dgtools.git /opt/DgStereo/dgtools && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-imview.git /opt/DgStereo/imview && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-pygeotools.git /opt/DgStereo/pygeotools && \
+    git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr && \
+    printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt && \
+    chmod 755 -R /opt/* && \
+    pip install 2to3 psycopg2-binary && \
+    2to3 -w /opt/DgStereo && \
+    chmod +wx /lib/x86_64-linux-gnu/libc.so.6 && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
+        /usr/local/ilab/core && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git \
+        /usr/local/ilab/evhr && \
+    chmod a+rwx -R /usr/local/ilab/* && \
+    # SR-Lite Git Dependencies
+    pip install plotnine==0.10.1 && \
+    pip install --upgrade pylr2 && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
+        /usr/local/ilab/srlite && \
+    chmod a+rwx -R /usr/local/ilab/* && \
+    # CCDC System Dependencies
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/pyCCDC.git \
+        /usr/local/ilab/pyCCDC
+
+HEALTHCHECK NONE
+ENTRYPOINT []
+CMD ["/bin/bash"]
+

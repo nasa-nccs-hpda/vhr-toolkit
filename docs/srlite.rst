@@ -1,0 +1,44 @@
+============================================================================================================================
+SR\ :sub:`VHR`: empirical estimation of VHR surface reflectance (SR-lite) 
+============================================================================================================================
+
+.. image:: https://github.com/nasa-nccs-hpda/vhr-toolkit/actions/workflows/lint.yml/badge.svg
+        :target: https://github.com/nasa-nccs-hpda/vhr-toolkit/actions/workflows/lint.yml
+
+The workflow for estimating surface reflectance for commercial VHR multispectral imagery (SR\ :sub:`VHR`).
+
+.. image:: https://github.com/user-attachments/assets/f3a6f82c-56bd-4b14-b3d2-74f55be47514
+
+.. list-table:: Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Workflow Contributors
+     - Role
+     - Affiliation
+   * - Paul M .Montesano
+     - Author ; Evaluator
+     - NASA Goddard Space Flight Center Data Science Grou
+   * - Matthew J. Macander
+     - Author ; Evaluator
+     - Alaska Biological Research, Inc.
+   * - Jordan A. Caraballo-Vega
+     - Developer
+     - NASA Goddard Space Flight Center Data Science Group
+   * - Melanie J. Frost
+     - Author ; Evaluator
+     - NASA Goddard Space Flight Center Data Science Group
+   * - Jian Li
+     - Developer
+     - NASA Goddard Space Flight Center Data Science Group
+   * - Glenn S. Tamkin
+     - Developer
+     - NASA Goddard Space Flight Center Data Science Group
+   * - Mark L. Carroll
+     - PI
+     - NASA Goddard Space Flight Center Data Science Group (Lead)
+
+References:
+
+* User Guide (October 2024): https://docs.google.com/document/d/1tajOxCI53WAvnyrkgYiPNU7oTiBr-HOiFmUGfZN44lM/edit#heading=h.cbjbmv6c5chq
+* Surface Reflectance From Commercial Very High Resolution Multispectral Imagery Estimated Empirically With Synthetic Landsat (2023): https://ieeexplore.ieee.org/document/10670299

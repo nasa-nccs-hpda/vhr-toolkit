@@ -1,0 +1,118 @@
+#-----------------------------------------------------------------------------------------
+# Build ilab-toolkit container
+#-----------------------------------------------------------------------------------------
+#Bootstrap: docker
+#Bootstrap: oras
+Bootstrap: localimage 
+#FROM: gitlab.nccs.nasa.gov:5050/cisto-ilab/containers/vhr-cloudmask:1.0.0
+#FROM: /explore/nobackup/people/iluser/ilab_containers/staging/vhr-cloudmask_1.0.0.sif
+FROM: /explore/nobackup/people/iluser/ilab_containers/staging/vhr-cloudmask_latest.sif
+
+%labels
+    gdal_maintainer Even Rouault <even.rouault@spatialys.com>
+    cisto_author Jordan Caraballo-Vega
+    cisto_modified sstrong
+    Version v1.0.5
+
+%help
+===========================================================================
+    - 7/2/24 - v1.0.0: Starting with just vhr-cloudmask since All Python and GPU depenencies are installed in an OCI compliant Docker image. *Note:Pulled vhr-cloudmask:latest from Jordans repo onto adapt then pushed from there to this registry. Direct pull of vhr-cloudmask:latest container using FROM in this def did not work.
+    - 7/9/24 - Added EVHR 
+    - 7/19/24 -  v1.0.2 - SR-Lite, redis, celery[redis] 
+    - 7/29/24 - v1.0.3 - added /usr/local/ilab/srlite to PYTHONPATH, uncommented plotline install.
+    - 8/30/24 - v1.0.4 - latest vhr-cloudmask container with Jordan fix.
+    - 9/19/24 - v1.0.5 - Previous vhr-cloudmask container was not the fix due to repo space. This one is latest vhr-cloudmask container with Jordan fix.
+===========================================================================
+
+%environment
+    export PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
+    export PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
+    #7/19/24 - Combine PYTHONPATH for all 3 apps
+    export PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite"
+    export PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
+    export PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
+    export PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
+
+    export REDIS_PORT="6379"
+    
+
+%post
+    PROJECT_PATH="/usr/local/ilab"
+    mkdir -p ${PROJECT_PATH}
+    STEREO_URL="https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2"
+
+    #*******************************************************************************
+    # EVHR
+    #-------------------------------------------------------------------------------
+    # EVHR System Dependencies
+    #-------------------------------------------------------------------------------
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
+    apt-get install -y parallel libdatetime-perl gawk util-linux bc && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/cache/apt
+
+    wget $STEREO_URL -O /opt/StereoPipeline.tar.bz2 && cd /opt
+    tar -jxf StereoPipeline.tar.bz2 && rm /opt/StereoPipeline.tar.bz2
+    mv /opt/StereoPipeline* /opt/StereoPipeline
+
+    #*** 7/19/24 -  REDIS and CELERY Dependencies
+    python -m pip install redis
+    python -m pip install celery[redis]
+
+    #-------------------------------------------------------------------------------
+    # EVHR DEM Dependencies-
+    #------------------------------------------------------------------------------
+    mkdir /opt/DgStereo
+    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/dgtools.git /opt/DgStereo/dgtools
+    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/imview.git /opt/DgStereo/imview
+    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/pygeotools.git /opt/DgStereo/pygeotools
+    git clone https://gitlab.nccs.nasa.gov/cisto-ilab/evhr/evhr-dem.git /opt/DgStereo/evhr
+    printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt
+    chmod 755 -R /opt/*
+    python -m pip install 2to3 psycopg2-binary
+    2to3 -w /opt/DgStereo
+    chmod +wx /lib/x86_64-linux-gnu/libc.so.6
+
+    #-------------------------------------------------------------------------------
+    # EVHR git clone
+    #-------------------------------------------------------------------------------
+    # RECOMMENDED LOCATION - CURRENTLY INCLUDED IN CORE
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
+    	${PROJECT_PATH}/core
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git \
+		${PROJECT_PATH}/evhr
+    chmod a+rwx -R ${PROJECT_PATH}/*
+    
+    #******************************************************************************
+
+    #******************************************************************************
+    # SR-Lite
+    #-------------------------------------------------------------------------------
+    # SR-Lite System Dependencies
+    #-------------------------------------------------------------------------------
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        python3-tk tk-dev libgdbm-dev libc6-dev libbz2-dev \
+        libffi-dev zlib1g-dev liblzma-dev libgirepository1.0-dev libcairo2-dev \
+        pkg-config python3-dev gir1.2-gtk-3.0 && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt
+    #-------------------------------------------------------------------------------
+    # SR-Lite Git Dependencies
+    #-------------------------------------------------------------------------------
+    #pip3 install --upgrade pygeotools
+    #7/19/24 - plotnine uninstalls the original numpy 1.22 and installs numpy 1.24 which breaks the srlite run?
+    #pip3 install --upgrade plotnine
+    pip3 install plotnine==0.10.1
+    pip3 install --upgrade pylr2
+    # RECOMMENDED LOCATION - CURRENTLY INCLUDED IN CORE
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
+        	${PROJECT_PATH}/srlite
+    chmod a+rwx -R ${PROJECT_PATH}/*
+    
+    #******************************************************************************
+    # CCDC 
+    #-------------------------------------------------------------------------------
+    # CCDC System Dependencies
+    #-------------------------------------------------------------------------------
