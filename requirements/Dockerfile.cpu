@@ -7,7 +7,7 @@ ARG PROJECT_PATH="/usr/local/ilab"
 
 # Environment
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
-# why is this?????? really bad practice
+# why is this??????? really bad practice
 ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
 ENV REDIS_PORT="6379"
 ENV REDIS_FILE="/etc/profile.d/redis_server.sh"
