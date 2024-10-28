@@ -175,6 +175,10 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/pyCCDC.git \
         /usr/local/ilab/pyCCDC && \
     chmod a+rwx -R /usr/local/ilab/*
+    # iltoolkit System Dependencies
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-toolkit.git \
+        /usr/local/ilab/vhr-toolkit && \
+    chmod a+rwx -R /usr/local/ilab/*
 
 HEALTHCHECK NONE
 ENTRYPOINT []
