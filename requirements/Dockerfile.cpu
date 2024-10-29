@@ -22,7 +22,7 @@ ENV SM_FRAMEWORK="tf.keras"
 ENV TF_USE_LEGACY_KERAS=1
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC"
+ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC:/usr/local/ilab/vhr-toolkit:/usr/local/ilab/vhr-toolkit/vhr-toolkit"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
 
