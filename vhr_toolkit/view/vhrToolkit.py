@@ -64,14 +64,14 @@ def main():
     # ---
     logger.info('Running EVHR.')
 
-    toa = EvhrToA(str(outDir), 
-                  args.dem, 
-                  args.pan_res, 
-                  args.pan_sharpen, 
+    toa = EvhrToA(str(outDir),
+                  args.dem,
+                  args.pan_res,
+                  args.pan_sharpen,
                   logger)
-         
+
     toas: list = toa.run(dgScenes)
-    toaDir = Path(toa._toaDir)
+    toaDir = Path(toa.toaDir)
     toaDirNum = int(toaDir.name.split('-')[0])
     toas = toaDir.glob('*-toa.tif')
 
@@ -79,52 +79,52 @@ def main():
     # Process ToA files.
     # ---
     for toaFile in toas:
-        
+
         logger.info('Processing ' + str(toaFile))
         processToaFile(toaFile, toaDir, toaDirNum, outDir, logger)
-    
-    
+
+
 # -----------------------------------------------------------------------------
 # getBandPairs
 # -----------------------------------------------------------------------------
 def getBandPairs(toaFile: Path, ccdcFile: Path) -> list:
-    
+
     if ccdcFile.name.endswith('_ccdc.tif'):
-        
-         bandPairs = [['BLUE', 'BAND-B'], ['GREEN', 'BAND-G'],
-                      ['RED', 'BAND-R'], ['NIR', 'BAND-N']]
-         
-         bandPairsExtra = [['BLUE', 'BAND-C'], ['GREEN', 'BAND-Y'],
-                           ['RED', 'BAND-RE'], ['NIR', 'BAND-N2']]
+
+        bandPairs = [['BLUE', 'BAND-B'], ['GREEN', 'BAND-G'],
+                     ['RED', 'BAND-R'], ['NIR', 'BAND-N']]
+
+        bandPairsExtra = [['BLUE', 'BAND-C'], ['GREEN', 'BAND-Y'],
+                          ['RED', 'BAND-RE'], ['NIR', 'BAND-N2']]
 
     elif ccdcFile.name.endswitth('-ccdc.tif'):
-        
+
         bandPairs = [['blue_ccdc', 'BAND-B'], ['green_ccdc', 'BAND-G'],
                      ['red_ccdc', 'BAND-R'], ['nir_ccdc', 'BAND-N']]
-                     
+
         bandPairsExtra = [['blue_ccdc', 'BAND-C'], ['green_ccdc', 'BAND-Y'],
                           ['red_ccdc', 'BAND-RE'], ['nir_ccdc', 'BAND-N2']]
-        
+
     else:
         raise RuntimeError('Unable to map bands for ' + str(ccdcFile))
-    
+
     # How many bands in the ToA?
     numBands: int = gdal.Open(toaFile, gdal.GA_ReadOnly).RasterCount
-    
+
     if numBands == 8:
-        
+
         bandPairs += bandPairsExtra
-        
+
     elif numBands != 4:
-        
+
         raise RuntimeError('Expected 4 or 8 bands, but found ' + str(numBands))
-        
+
     return bandPairs
-    
+
 # -----------------------------------------------------------------------------
 # processToaFile
 # -----------------------------------------------------------------------------
-def processToaFile(toaFile: Path, 
+def processToaFile(toaFile: Path,
                    toaDir: Path,
                    toaDirNum: int,
                    outDir: Path,
