@@ -6,6 +6,8 @@ import logging
 from pathlib import Path
 import sys
 
+from osgeo import gdal
+
 from core.model.DgFile import DgFile
 
 from evhr.model.EvhrToA import EvhrToA
@@ -19,11 +21,12 @@ from vhr_cloudmask.model.pipelines.cloudmask_cnn_pipeline import \
 # -----------------------------------------------------------------------------
 # main
 #
-# vhr-toolkit/view/vhrToolkit.py -o /explore/nobackup/people/rlgill/SystemTesting/testILTK --scenes_in_file /explore/nobackup/projects/ilab/projects/vhr-toolkit/testing/evhr/toa_clv_test_alaska_cloud.csv # noqa: E501
+# vhr-toolkit/vhr_toolkit/view/vhrToolkit.py -o /explore/nobackup/people/rlgill/SystemTesting/testILTK --scenes_in_file /explore/nobackup/projects/ilab/projects/vhr-toolkit/testing/evhr/toa_clv_test_alaska_cloud.csv  # noqa: E501
+#
+# vhr-toolkit/vhr_toolkit/view/vhrToolkit.py -o /explore/nobackup/projects/ilab/ILTK-testing-output/214 --scenes_in_file /explore/nobackup/projects/ilab/ILTK-testing-output/214/toa_clv_test_alaska_cloud_214.csv  # noqa: E501
 #
 # TODO: EvhrToA needs an accessor for _outDir, _toaDir.
 # TODO: EvhrToA.__init__() outDir s/b of type Path.
-# TODO: EvhrToA.run() return list of ToAs produced?
 # -----------------------------------------------------------------------------
 def main():
 
@@ -31,6 +34,7 @@ def main():
     # Parse input arguments.
     # ---
     args = parseArgs()
+    outDir: Path = args.o
 
     # ---
     # Logging
@@ -59,24 +63,84 @@ def main():
     # EVHR
     # ---
     logger.info('Running EVHR.')
-    toa = EvhrToA(args.o, args.dem, args.pan_res, args.pan_sharpen, logger)
-    toa.run(dgScenes)
+
+    toa = EvhrToA(str(outDir), 
+                  args.dem, 
+                  args.pan_res, 
+                  args.pan_sharpen, 
+                  logger)
+         
+    toas: list = toa.run(dgScenes)
     toaDir = Path(toa._toaDir)
     toaDirNum = int(toaDir.name.split('-')[0])
     toas = toaDir.glob('*-toa.tif')
+
+    # ---
+    # Process ToA files.
+    # ---
+    for toaFile in toas:
+        
+        logger.info('Processing ' + str(toaFile))
+        processToaFile(toaFile, toaDir, toaDirNum, outDir, logger)
+    
+    
+# -----------------------------------------------------------------------------
+# getBandPairs
+# -----------------------------------------------------------------------------
+def getBandPairs(toaFile: Path, ccdcFile: Path) -> list:
+    
+    if ccdcFile.name.endswith('_ccdc.tif'):
+        
+         bandPairs = [['BLUE', 'BAND-B'], ['GREEN', 'BAND-G'],
+                      ['RED', 'BAND-R'], ['NIR', 'BAND-N']]
+         
+         bandPairsExtra = [['BLUE', 'BAND-C'], ['GREEN', 'BAND-Y'],
+                           ['RED', 'BAND-RE'], ['NIR', 'BAND-N2']]
+
+    elif ccdcFile.name.endswitth('-ccdc.tif'):
+        
+        bandPairs = [['blue_ccdc', 'BAND-B'], ['green_ccdc', 'BAND-G'],
+                     ['red_ccdc', 'BAND-R'], ['nir_ccdc', 'BAND-N']]
+                     
+        bandPairsExtra = [['blue_ccdc', 'BAND-C'], ['green_ccdc', 'BAND-Y'],
+                          ['red_ccdc', 'BAND-RE'], ['nir_ccdc', 'BAND-N2']]
+        
+    else:
+        raise RuntimeError('Unable to map bands for ' + str(ccdcFile))
+    
+    # How many bands in the ToA?
+    numBands: int = gdal.Open(toaFile, gdal.GA_ReadOnly).RasterCount
+    
+    if numBands == 8:
+        
+        bandPairs += bandPairsExtra
+        
+    elif numBands != 4:
+        
+        raise RuntimeError('Expected 4 or 8 bands, but found ' + str(numBands))
+        
+    return bandPairs
+    
+# -----------------------------------------------------------------------------
+# processToaFile
+# -----------------------------------------------------------------------------
+def processToaFile(toaFile: Path, 
+                   toaDir: Path,
+                   toaDirNum: int,
+                   outDir: Path,
+                   logger: logging.RootLogger) -> None:
 
     # ---
     # EVHR -> CloudMaskPipeline
     # ---
     logger.info('Running CloudMaskPipeline.')
     cMaskDirNum = toaDirNum + 1
-    cMaskDir = Path(args.o) / (str(cMaskDirNum) + '-masks')
+    cMaskDir = outDir / (str(cMaskDirNum) + '-masks')
     cMaskDir.mkdir(exist_ok=True)
     cMaskActualOutDir = cMaskDir / '5-toas'
-    toaRegex = [str(toaDir / '*-toa.tif')]
 
     cmpl = CloudMaskPipeline(output_dir=cMaskDir,
-                             inference_regex_list=toaRegex)
+                             inference_regex_list=[str(toaFile)])
 
     cmpl.predict()
 
@@ -85,21 +149,22 @@ def main():
     # ---
     logger.info('Running CCDC.')
     ccdcDirNum = cMaskDirNum + 1
-    ccdcDir = Path(args.o) / (str(ccdcDirNum) + '-ccdc')
+    ccdcDir = outDir / (str(ccdcDirNum) + '-ccdc')
     ccdcDir.mkdir(exist_ok=True)
-    expCcdc = [ccdcDir / f.name.replace('-toa', '-toa_ccdc') for f in toas]
+    ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
+    ccdcFile: Path = ccdc.run(toaFile)[0]
 
-    if not all([f.exists() for f in expCcdc]):
-
-        ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
-        ccdc.run()
+    # ---
+    # Get band pairs for SRL.
+    # ---
+    bandPairs: list = getBandPairs(toaFile, ccdcFile)
 
     # ---
     # EVHR + Cloud Mask + CCDC -> SRL
     # ---
     logger.info('Running SR Lite.')
     srlDirNum = ccdcDirNum + 1
-    srlDir = Path(args.o) / (str(srlDirNum) + '-srl')
+    srlDir = outDir / (str(srlDirNum) + '-srl')
     srlDir.mkdir(exist_ok=True)
 
     srl = SrliteWorkflow(output_dir=srlDir,
@@ -115,10 +180,10 @@ def main():
                          clean='True',
                          cloudmask_suffix='-toa.cloudmask.tif',
                          target_suffix='-toa_ccdc.tif',
+                         bandpairs=str(bandPairs),
                          logger=logger)
 
-    srl.processToas()
-
+    srl.processToa(toaFile)
 
 # -----------------------------------------------------------------------------
 # parseArgs
@@ -132,6 +197,7 @@ def parseArgs() -> argparse.Namespace:
     # Universal Parameters
     # ---
     parser.add_argument('-o',
+                        type=Path,
                         default='.',
                         help='Path to output directory')
 
