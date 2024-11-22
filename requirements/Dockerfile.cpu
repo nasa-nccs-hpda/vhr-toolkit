@@ -1,4 +1,5 @@
 # vhr-toolkit combined container
+
 FROM ghcr.io/osgeo/gdal:ubuntu-full-3.9.2
 
 # Arguments to pass to the image
