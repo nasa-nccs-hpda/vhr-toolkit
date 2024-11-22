@@ -121,6 +121,7 @@ def getBandPairs(toaFile: Path, ccdcFile: Path) -> list:
 
     return bandPairs
 
+
 # -----------------------------------------------------------------------------
 # processToaFile
 # -----------------------------------------------------------------------------
@@ -184,6 +185,7 @@ def processToaFile(toaFile: Path,
                          logger=logger)
 
     srl.processToa(toaFile)
+
 
 # -----------------------------------------------------------------------------
 # parseArgs
