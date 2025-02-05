@@ -1,4 +1,4 @@
-# vhr-toolkit combined container
+# vhr-toolkit combined container 
 
 FROM ghcr.io/osgeo/gdal:ubuntu-full-3.9.2
 
