@@ -140,6 +140,14 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     chmod +wx /lib/x86_64-linux-gnu/libc.so.6 && \
     chmod a+rwx -R /usr/local/ilab/*
 
+# Create a CLI wrapper so "vhr-toolkit" behaves like a binary
+RUN printf '%s\n' \
+  '#!/usr/bin/env bash' \
+  'set -euo pipefail' \
+  'exec python /usr/local/ilab/vhr-toolkit/vhr_toolkit/view/vhrToolkit.py "$@"' \
+  > /usr/local/bin/vhr-toolkit && \
+  chmod +x /usr/local/bin/vhr-toolkit
+
 HEALTHCHECK NONE
 ENTRYPOINT []
 CMD ["/bin/bash"]

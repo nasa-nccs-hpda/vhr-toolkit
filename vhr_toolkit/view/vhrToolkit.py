@@ -81,7 +81,8 @@ def main():
     for toaFile in toas:
 
         logger.info('Processing ' + str(toaFile))
-        processToaFile(toaFile, toaDir, toaDirNum, outDir, logger)
+        processToaFile(
+            toaFile, toaDir, toaDirNum, outDir, args.gee_key, logger)
 
 
 # -----------------------------------------------------------------------------
@@ -109,7 +110,7 @@ def getBandPairs(toaFile: Path, ccdcFile: Path) -> list:
         raise RuntimeError('Unable to map bands for ' + str(ccdcFile))
 
     # How many bands in the ToA?
-    numBands: int = gdal.Open(toaFile, gdal.GA_ReadOnly).RasterCount
+    numBands: int = gdal.Open(str(toaFile), gdal.GA_ReadOnly).RasterCount
 
     if numBands == 8:
 
@@ -129,7 +130,8 @@ def processToaFile(toaFile: Path,
                    toaDir: Path,
                    toaDirNum: int,
                    outDir: Path,
-                   logger: logging.RootLogger) -> None:
+                   geeKey: str = None,
+                   logger: logging.RootLogger = None) -> None:
 
     # ---
     # EVHR -> CloudMaskPipeline
@@ -138,7 +140,6 @@ def processToaFile(toaFile: Path,
     cMaskDirNum = toaDirNum + 1
     cMaskDir = outDir / (str(cMaskDirNum) + '-masks')
     cMaskDir.mkdir(exist_ok=True)
-    cMaskActualOutDir = cMaskDir / '5-toas'
 
     cmpl = CloudMaskPipeline(output_dir=cMaskDir,
                              inference_regex_list=[str(toaFile)])
@@ -152,13 +153,18 @@ def processToaFile(toaFile: Path,
     ccdcDirNum = cMaskDirNum + 1
     ccdcDir = outDir / (str(ccdcDirNum) + '-ccdc')
     ccdcDir.mkdir(exist_ok=True)
-    ccdc = CCDCPipeline(input_dir=toaDir, output_dir=ccdcDir)
+    ccdc = CCDCPipeline(
+        input_dir=toaDir,
+        output_dir=ccdcDir,
+        gee_key=geeKey)
     ccdcFile: Path = ccdc.run(toaFile)[0]
 
     # ---
     # Get band pairs for SRL.
     # ---
+    print("BEFORE BAND PAIRS")
     bandPairs: list = getBandPairs(toaFile, ccdcFile)
+    print("THIS ARE MY BAND PAIRS")
 
     # ---
     # EVHR + Cloud Mask + CCDC -> SRL
@@ -171,7 +177,7 @@ def processToaFile(toaFile: Path,
     srl = SrliteWorkflow(output_dir=srlDir,
                          toa_src=toaDir,
                          target_dir=ccdcDir,
-                         cloudmask_dir=cMaskActualOutDir,
+                         cloudmask_dir=cMaskDir,
                          regressor='rma',
                          debug=1,
                          pmask='True',
@@ -179,7 +185,7 @@ def processToaFile(toaFile: Path,
                          csv='True',
                          band8='True',
                          clean='True',
-                         cloudmask_suffix='-toa.cloudmask.tif',
+                         cloudmask_suffix='-toa_cloudmask.tif',
                          target_suffix='-toa_ccdc.tif',
                          bandpairs=str(bandPairs),
                          logger=logger)
@@ -243,6 +249,12 @@ def parseArgs() -> argparse.Namespace:
     # ---
     # CCDC Parameters
     # ---
+    parser.add_argument('--gee-key',
+                        type=Path,
+                        default=None,
+                        required=False,
+                        dest='gee_key',
+                        help='Path to GEE location')
 
     # ---
     # SR-lite Parameters

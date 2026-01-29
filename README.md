@@ -8,7 +8,15 @@
 The CPU-only version of the vhr-toolkit container can be downloaded with:
 
 ```bash
-singularity build --sandbox /lscratch/$USER/container/vhr-toolkit docker://nasanccs/vhr-toolkit:cpu
+singularity build --sandbox /lscratch/$USER/container/vhr-toolkit docker://nasanccs/vhr-toolkit:pytorch
+```
+
+## Quickstart
+
+To run the entire workflow for a single test scene:
+
+```bash
+singularity exec --nv -B /explore,/panfs,/css,/nfs4m /explore/nobackup/projects/ilab/containers/vhr-toolkit-latest python /usr/local/ilab/vhr-toolkit/vhr_toolkit/view/vhrToolkit.py -o vhr-toolkit-output --scenes_in_file tests/catalog_1030010003A81D00.txt | tee catalog_1030010003A81D00.log
 ```
 
 ## Contributing
