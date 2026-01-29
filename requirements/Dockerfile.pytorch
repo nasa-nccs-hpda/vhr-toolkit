@@ -22,7 +22,7 @@ ENV C_INCLUDE_PATH="/usr/include/gdal"
 
 # ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
-ENV PYTHONPATH="/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite"
+ENV PYTHONPATH="/usr/local/ilab:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite"
 ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC:/usr/local/ilab/vhr-toolkit:/usr/local/ilab/vhr-toolkit/vhr-toolkit:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 
