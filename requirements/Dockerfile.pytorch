@@ -144,6 +144,7 @@ RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-toolkit.git \
         /usr/local/ilab/vhr-toolkit && \
     chmod a+rwx -R /usr/local/ilab/*
+    # cloudmasking dependencies
     git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-cloudmask.pytorch.git \
         /usr/local/ilab/vhr-cloudmask && \
     chmod a+rwx -R /usr/local/ilab/*
