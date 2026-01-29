@@ -7,7 +7,7 @@ ARG STEREO_URL="https://github.com/NeoGeographyToolkit/StereoPipeline/releases/d
 ARG PROJECT_PATH="/usr/local/ilab"
 
 # Environment
-ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
+# ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 # why is this??????? really bad practice
 # ENV PYTHONPATH="/usr/local/lib/python3.8/dist-packages"
 ENV REDIS_PORT="6379"
@@ -22,8 +22,10 @@ ENV C_INCLUDE_PATH="/usr/include/gdal"
 
 # ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab"
 
-ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC:/usr/local/ilab/vhr-toolkit:/usr/local/ilab/vhr-toolkit/vhr-toolkit"
+ENV PYTHONPATH="/usr/local/ilab/vhr-cloudmask:/usr/local/ilab/evhr:/usr/local/ilab/core:/usr/local/ilab/srlite/srlite"
+ENV PYTHONPATH="$PYTHONPATH:/usr/local/ilab/srlite:/usr/local/ilab/pyCCDC:/usr/local/ilab/vhr-toolkit:/usr/local/ilab/vhr-toolkit/vhr-toolkit:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
 ENV PYTHONPATH="$PYTHONPATH:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools"
+
 ENV PATH="$PATH:/opt/DgStereo/dgtools:/opt/DgStereo/pygeotools:/opt/DgStereo/dgtools/dgtools:/opt/StereoPipeline/bin:/opt/DgStereo/evhr"
 
 RUN PROJECT_PATH="/usr/local/ilab" && \
@@ -111,40 +113,31 @@ RUN PROJECT_PATH="/usr/local/ilab" && \
 
 RUN mkdir -p "/usr/local/ilab" "/opt/DgStereo" && \
     # EVHR System Dependencies
-    wget "https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2" -O /opt/StereoPipeline.tar.bz2 && \
+    wget "https://github.com/NeoGeographyToolkit/StereoPipeline/releases/download/2.7.0/StereoPipeline-2.7.0-2020-07-29-x86_64-Linux.tar.bz2" \
+        -O /opt/StereoPipeline.tar.bz2 && \
     cd /opt && \
     tar -jxf StereoPipeline.tar.bz2 && \
     rm /opt/StereoPipeline.tar.bz2 && \
     mv /opt/StereoPipeline* /opt/StereoPipeline && \
+    
     # EVHR DEM Dependencies
     git clone https://github.com/nasa-nccs-hpda/evhr-dgtools.git /opt/DgStereo/dgtools && \
     git clone https://github.com/nasa-nccs-hpda/evhr-imview.git /opt/DgStereo/imview && \
     git clone https://github.com/nasa-nccs-hpda/evhr-pygeotools.git /opt/DgStereo/pygeotools && \
     git clone https://github.com/nasa-nccs-hpda/evhr-dem.git /opt/DgStereo/evhr && \
-    printf "crane103\ncrane104\ncrane105\ncrane106\n\n" > /opt/DgStereo/nodeList.txt && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git /usr/local/ilab/core && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git /usr/local/ilab/evhr && \
+    
+    # VHR Toolkit Dependencies
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git /usr/local/ilab/srlite && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/pyCCDC.git /usr/local/ilab/pyCCDC && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-toolkit.git /usr/local/ilab/vhr-toolkit && \
+    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-cloudmask.pytorch.git /usr/local/ilab/vhr-cloudmask && \
+
+    # Fix permissions
     chmod 755 -R /opt/* && \
     2to3 -w /opt/DgStereo && \
     chmod +wx /lib/x86_64-linux-gnu/libc.so.6 && \
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/core.git \
-        /usr/local/ilab/core && \
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/evhr.git \
-        /usr/local/ilab/evhr && \
-    chmod a+rwx -R /usr/local/ilab/* && \
-    # SR-Lite Git Dependencies
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/srlite.git \
-        /usr/local/ilab/srlite && \
-    chmod a+rwx -R /usr/local/ilab/* && \
-    # CCDC System Dependencies
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/pyCCDC.git \
-        /usr/local/ilab/pyCCDC && \
-    chmod a+rwx -R /usr/local/ilab/* && \
-    # iltoolkit System Dependencies
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-toolkit.git \
-        /usr/local/ilab/vhr-toolkit && \
-    chmod a+rwx -R /usr/local/ilab/* && \
-    # cloudmasking dependencies
-    git clone --single-branch --branch main https://github.com/nasa-nccs-hpda/vhr-cloudmask.pytorch.git \
-        /usr/local/ilab/vhr-cloudmask && \
     chmod a+rwx -R /usr/local/ilab/*
 
 HEALTHCHECK NONE
