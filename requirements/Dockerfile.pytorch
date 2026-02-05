@@ -73,7 +73,7 @@ RUN rm -rf /usr/lib/python*/EXTERNALLY-MANAGED && \
     pip install notebook && \
     pip install numba && \
     pip install numexpr && \
-    pip install numpy && \
+    pip install "numpy<2" && \
     pip install pandas && \
     pip install pyhdf && \
     pip install pyproj && \
